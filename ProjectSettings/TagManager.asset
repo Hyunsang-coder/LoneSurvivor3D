@@ -6,6 +6,8 @@ TagManager:
   tags:
   - MapDetector
   - Bullet
+  - Enemy
+  - Tile
   layers:
   - Default
   - TransparentFX

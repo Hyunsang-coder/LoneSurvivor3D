@@ -25,7 +25,7 @@ public class SpawnManager : MonoBehaviour
         if (spawnTimer > spawnTimerMax)
         {
             spawnTimer = 0;
-            SpawnEnmey(0);
+            SpawnEnmey(1);
         }
     }
 

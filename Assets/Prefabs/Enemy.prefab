@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 2394040662206471659}
   - component: {fileID: 3547099904861333690}
   - component: {fileID: -4990431914395724627}
-  - component: {fileID: -5659706876182263819}
+  - component: {fileID: 3078327423285287547}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,8 +99,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49d838ed527a43c790de946c19467a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyindex: 0
-  speed: 1
+  material: {fileID: 0}
+  hitColor: {r: 0.7169812, g: 0.38862538, b: 0.3551086, a: 0.7176471}
+  hitDuration: 0.5
+  speed: 2
 --- !u!54 &3547099904861333690
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -115,7 +117,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &-4990431914395724627
 MonoBehaviour:
@@ -131,7 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 10
   health: 0
---- !u!136 &-5659706876182263819
+  isDead: 0
+--- !u!136 &3078327423285287547
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,4 +147,4 @@ CapsuleCollider:
   m_Radius: 0.5278956
   m_Height: 1.7245162
   m_Direction: 1
-  m_Center: {x: -0.00008055571, y: 0.86424947, z: 0.0032529694}
+  m_Center: {x: -0.00008055571, y: 0.8, z: 0.0032529694}

@@ -7,18 +7,15 @@ public class HealthSystem : MonoBehaviour
     public float MaxHealth;
     public float health;
 
+    public bool isDead;
 
-    void Start()
-    {
+
+    private void OnEnable() {
         health = MaxHealth;
+        isDead = false;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
+    
     public void TakeDamage(float damage)
     {
         health -= damage;
@@ -31,6 +28,7 @@ public class HealthSystem : MonoBehaviour
     void DeathBehavior()
     {
         gameObject.SetActive(false);
+        isDead = true;
         return;
     }
 }
