@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1104858622436692115}
   speed: 4
+  target: {fileID: 0}
 --- !u!114 &3027116665381817005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +213,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 4
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!1 &1104858622443985885
 GameObject:
@@ -1241,8 +1242,8 @@ GameObject:
   - component: {fileID: 1104858622443839359}
   - component: {fileID: 1104858622432459773}
   m_Layer: 0
-  m_Name: Character_Ghost_01
-  m_TagString: Untagged
+  m_Name: Character
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

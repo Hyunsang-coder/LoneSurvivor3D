@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     PlayerControls input;
     // Start is called before the first frame update
 
+    Rigidbody rigid;
+
 
     public Vector3 direction;
     public float speed= 10f;
@@ -29,6 +31,8 @@ public class Player : MonoBehaviour
 
         character = transform.Find("Character").gameObject;
         chaAnimator = character.GetComponent<Animator>();
+        rigid = GetComponent<Rigidbody>();
+
 
     }
     void Start()
@@ -39,7 +43,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(direction * Time.deltaTime * speed, Space.World);
+        //rigid.AddForce(direction * speed* Time.deltaTime * speed);
+        
 
         if (direction.magnitude > 0) 
         {
@@ -52,14 +57,24 @@ public class Player : MonoBehaviour
         
     }
 
+    private void FixedUpdate() 
+    {
+        //rigid.velocity = direction * speed* Time.deltaTime;
+        Vector3 nextPos = direction * speed * Time.fixedDeltaTime;
+        rigid.MovePosition(rigid.position + nextPos);
+    }
+
     void PlayerMove(InputAction.CallbackContext context)
     {
         Vector2 inputValue = context.ReadValue<Vector2>().normalized;
         direction = new Vector3(inputValue.x, 0, inputValue.y);
+        
 
         if(direction != Vector3.zero)
         {
-            character.transform.rotation = Quaternion.LookRotation(direction);
+            //character.transform.rotation = Quaternion.LookRotation(direction);
+
+            transform.rotation = Quaternion.LookRotation(direction);
         }
     }
 }

@@ -25,7 +25,10 @@ public class Enemy : MonoBehaviour
     private Vector3 lastPosition;
     private bool isMoving;
 
+    public Transform target;
 
+
+    Collider enemyCollider;
     void OnEnable()
     {
         player = Player.Instance;
@@ -33,16 +36,19 @@ public class Enemy : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
 
         animator = GetComponent<Animator>();
+        target = null;
 
         //material = GetComponent<MeshRenderer>().material;
         //material.color = originalColor;
+
+        enemyCollider = GetComponent<Collider>();
 
     }
 
    
     private void Update()
     {
-       if (player)
+       if (target)
         {
             animator.SetBool("Move", true);
         }
@@ -53,13 +59,17 @@ public class Enemy : MonoBehaviour
     }
 
 
+
     void FixedUpdate()
     {
-        transform.LookAt(player.transform.position);
-        dir = player.transform.position - rigid.position;
-        Vector3 nextPos = dir.normalized * speed * Time.fixedDeltaTime;
+        if (target)
+        {
+            transform.LookAt(target.position);
+            dir = target.position - rigid.position;
+            Vector3 nextPos = dir.normalized * speed * Time.fixedDeltaTime;
 
-        rigid.MovePosition(rigid.position + nextPos);
+            rigid.MovePosition(rigid.position + nextPos);
+        }
         
     }
 
@@ -70,6 +80,8 @@ public class Enemy : MonoBehaviour
             other.GetComponent<HealthSystem>().TakeDamage(10f * Time.deltaTime );
         }
     }
+
+    
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Bullet"))
         {
@@ -78,29 +90,15 @@ public class Enemy : MonoBehaviour
             float pushBack = other.transform.parent.GetComponent<Sword>().GetPushBack();
             rigid.AddForce(-dir * pushBack, ForceMode.Impulse);
 
+            Debug.Log("Take Damage");
         }
     }
 
 
-    /*
-    void OnHitColorChanged()
-    {   
-        material.color = hitColor;
 
-        if(!gameObject.activeSelf) return;
-        StartCoroutine(ResetColor());
 
-    }
-
-    IEnumerator ResetColor()
+    public void SetTarget(Transform target)
     {
-        yield return new WaitForSeconds(hitDuration);
-
-        material.color = originalColor;
+        this.target  = target;
     }
-
-    private void OnDisable() {
-        StopAllCoroutines();
-    }
-    */
 }
