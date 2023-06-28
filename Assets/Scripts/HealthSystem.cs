@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HealthSystem : MonoBehaviour
 {
+    public Action onDeath;
+
     public float MaxHealth;
     public float health;
 
@@ -27,8 +30,8 @@ public class HealthSystem : MonoBehaviour
 
     void DeathBehavior()
     {
-        gameObject.SetActive(false);
+        onDeath?.Invoke();
+        //gameObject.SetActive(false);
         isDead = true;
-        return;
     }
 }

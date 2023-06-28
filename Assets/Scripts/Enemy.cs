@@ -7,12 +7,10 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] Animator animator;
 
-    /*
-    public Material material;
-    public Color hitColor = Color.red;
-    public float hitDuration = 0.3f;
-    Color originalColor = Color.white;
-    */
+    
+    public Material deathMaterial;
+    public Material originaMaterial;
+    public float duration = 2f;
 
     Player player;
     Rigidbody rigid;
@@ -27,6 +25,8 @@ public class Enemy : MonoBehaviour
 
     public Transform target;
 
+    SkinnedMeshRenderer smRenderer;
+
 
     Collider enemyCollider;
     void OnEnable()
@@ -38,26 +38,80 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
         target = null;
 
-        //material = GetComponent<MeshRenderer>().material;
-        //material.color = originalColor;
-
         enemyCollider = GetComponent<Collider>();
 
+        smRenderer = transform.Find("Character").GetComponent<SkinnedMeshRenderer>();
+
+        originaMaterial = smRenderer.material;
+
+        smRenderer.material = deathMaterial;
+        
     }
 
    
     private void Update()
     {
-       if (target)
+
+       if (target && !isMoving)
         {
             animator.SetBool("Move", true);
+            isMoving = true;
         }
-        else
+        else if (!target && isMoving)
         {
             animator.SetBool("Move", false);
+            isMoving = false;
         }
+
     }
 
+    private void Start() {
+        StartCoroutine(SpawnEffect());
+        healthSystem.onDeath += Dead;
+    }
+
+    float glowTime = 0f;
+    IEnumerator SpawnEffect()
+    {
+        // 값이 공유되지 않게 새로운 material 인스턴스 만들기 
+        Material currentMaterial = new Material(smRenderer.material);
+        float startTime = Time.time;
+
+        while (Time.time - startTime < duration)
+        {
+            glowTime += Time.deltaTime;
+            currentMaterial.SetFloat("_value", glowTime);
+            smRenderer.material = currentMaterial;
+
+            yield return null;
+        }
+
+        smRenderer.material = new Material(originaMaterial);
+    }
+
+    public void Dead()
+    {
+        StartCoroutine(DeathEffect());
+    }
+    IEnumerator DeathEffect()
+    {
+        // 값이 공유되지 않게 새로운 material 인스턴스 만들기 
+        Material currentMaterial = new Material(deathMaterial);
+        float startTime = Time.time;
+
+        while (Time.time - startTime < duration)
+        {
+            glowTime = 2f;
+            glowTime -= Time.deltaTime;
+            currentMaterial.SetFloat("_value", glowTime);
+            smRenderer.material = currentMaterial;
+
+            yield return null;
+        }
+
+        smRenderer.material = new Material(originaMaterial);
+        gameObject.SetActive(false);
+    }
 
 
     void FixedUpdate()

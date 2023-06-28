@@ -50,7 +50,8 @@ public class Player : MonoBehaviour
         {
             chaAnimator.SetBool("Run", true);
         }
-        else{
+        else
+        {
             chaAnimator.SetBool("Run", false);
         }
 

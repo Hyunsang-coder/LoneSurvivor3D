@@ -168,6 +168,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1104858622436692115}
+  deathMaterial: {fileID: 2100000, guid: 1637731c2a3f4d64b9a573ce2ae899d8, type: 2}
+  originaMaterial: {fileID: 0}
+  duration: 1
   speed: 4
   target: {fileID: 0}
 --- !u!114 &3027116665381817005

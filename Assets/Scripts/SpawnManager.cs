@@ -34,7 +34,7 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < spawnPoints.Length; i++)
         {
             GameObject enemy = PoolManager.Instance.GetObject(index);
-            enemy.transform.position = spawnPoints[i].position;
+            enemy.transform.position = spawnPoints[i].position + new Vector3(Random.Range(0, 3), 0, Random.Range(0, 3));
         }
         
     }
