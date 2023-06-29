@@ -11,7 +11,7 @@ public class PlayerDetector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-         player = Player.Instance.transform;
+         player = PlayerMovement.Instance.transform;
     }
 
     // Update is called once per frame
@@ -23,7 +23,22 @@ public class PlayerDetector : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Enemy"))
         {
-            other.GetComponent<Enemy>().SetTarget(Player.Instance.transform);
+            other.GetComponent<EnemyMovement>().SetTarget(PlayerMovement.Instance.transform);
         }
+    }
+
+    private void OnTriggerStay(Collider other) {
+        if (other.CompareTag("Enemy"))
+        {
+            other.GetComponent<EnemyMovement>().SetTarget(PlayerMovement.Instance.transform);
+        }
+    }
+
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Enemy"))
+        {
+            other.GetComponent<EnemyMovement>().SetTarget(null);
+        }
+        
     }
 }

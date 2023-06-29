@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Detector : MonoBehaviour
 {
-    [SerializeField] Enemy enemy;
+    [SerializeField] EnemyMovement enemy;
 
     private void Awake() {
         
-        enemy = GetComponentInParent<Enemy>();
+        enemy = GetComponentInParent<EnemyMovement>();
     }
 
     private void OnTriggerEnter(Collider other) {

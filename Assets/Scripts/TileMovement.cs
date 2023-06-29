@@ -6,14 +6,11 @@ public class TileMovement : MonoBehaviour
 {
     [SerializeField] Transform player;
     [SerializeField] float snapSize = 100f;
-    void Awake()
-    {
-       
-    }
+    
     // Start is called before the first frame update
     void Start()
     {
-         player = Player.Instance.transform;
+         player = PlayerMovement.Instance.transform;
     }
 
     // Update is called once per frame

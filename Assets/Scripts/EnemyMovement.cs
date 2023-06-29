@@ -2,62 +2,82 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
-
     [SerializeField] Animator animator;
 
     
-    public Material deathMaterial;
+    public Material dissolveMaterial;
     public Material originaMaterial;
+    SkinnedMeshRenderer smRenderer;
+
+    CharacterController controller;
     public float duration = 2f;
 
-    Player player;
-    Rigidbody rigid;
     HealthSystem healthSystem;
 
-    Vector3 dir;
+    public Vector3 moveVector;
 
-    public float speed = 2;
+    public float speed = 10;
 
     private Vector3 lastPosition;
     private bool isMoving;
+    bool isDead;
 
     public Transform target;
 
-    SkinnedMeshRenderer smRenderer;
 
 
-    Collider enemyCollider;
+
     void OnEnable()
     {
-        player = Player.Instance;
-        rigid = GetComponent<Rigidbody>();
         healthSystem = GetComponent<HealthSystem>();
 
         animator = GetComponent<Animator>();
-        target = null;
-
-        enemyCollider = GetComponent<Collider>();
+        
 
         smRenderer = transform.Find("Character").GetComponent<SkinnedMeshRenderer>();
 
-        originaMaterial = smRenderer.material;
+        smRenderer.material = new Material(dissolveMaterial);
 
-        smRenderer.material = deathMaterial;
+        controller = GetComponent<CharacterController>();
+
+        target = null;
+
+        StartCoroutine(SpawnEffect());
+
         
+    }
+
+    private void OnDisable() {
+
+        smRenderer.material = new Material(originaMaterial);
     }
 
    
     private void Update()
     {
+        
+        if (isDead)
+        {
+            animator.SetBool("Move", false);
+            isMoving = false;
+            target = null;
+        } 
 
-       if (target && !isMoving)
+        if (target)
+        {
+            moveVector = (target.position - transform.position).normalized;
+        }
+
+
+        if (moveVector.magnitude > 0 && !isMoving)
         {
             animator.SetBool("Move", true);
             isMoving = true;
         }
-        else if (!target && isMoving)
+
+        else if (moveVector.magnitude == 0 )
         {
             animator.SetBool("Move", false);
             isMoving = false;
@@ -65,16 +85,30 @@ public class Enemy : MonoBehaviour
 
     }
 
+
+     void FixedUpdate()
+    {
+        if (isDead || !target) return;
+
+        if (target)
+        {
+            controller.Move(moveVector * Time.fixedDeltaTime * speed);
+            transform.LookAt(target.position);
+        }
+        
+    }
+
     private void Start() {
-        StartCoroutine(SpawnEffect());
+        
         healthSystem.onDeath += Dead;
     }
 
     float glowTime = 0f;
     IEnumerator SpawnEffect()
     {
-        // 값이 공유되지 않게 새로운 material 인스턴스 만들기 
-        Material currentMaterial = new Material(smRenderer.material);
+        isDead = true;
+
+        Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
 
         while (Time.time - startTime < duration)
@@ -87,6 +121,9 @@ public class Enemy : MonoBehaviour
         }
 
         smRenderer.material = new Material(originaMaterial);
+
+        isDead = false;
+
     }
 
     public void Dead()
@@ -96,36 +133,31 @@ public class Enemy : MonoBehaviour
     IEnumerator DeathEffect()
     {
         // 값이 공유되지 않게 새로운 material 인스턴스 만들기 
-        Material currentMaterial = new Material(deathMaterial);
+        isDead = true;
+        target = null;
+        isMoving = false;
+
+        Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
+        glowTime = 2f;
 
         while (Time.time - startTime < duration)
         {
-            glowTime = 2f;
+            
+            smRenderer.material = currentMaterial;
             glowTime -= Time.deltaTime;
             currentMaterial.SetFloat("_value", glowTime);
-            smRenderer.material = currentMaterial;
-
-            yield return null;
+            
+             yield return null;
         }
 
         smRenderer.material = new Material(originaMaterial);
         gameObject.SetActive(false);
     }
 
+    
 
-    void FixedUpdate()
-    {
-        if (target)
-        {
-            transform.LookAt(target.position);
-            dir = target.position - rigid.position;
-            Vector3 nextPos = dir.normalized * speed * Time.fixedDeltaTime;
-
-            rigid.MovePosition(rigid.position + nextPos);
-        }
-        
-    }
+   
 
 
     private void OnTriggerStay(Collider other) {
@@ -133,6 +165,8 @@ public class Enemy : MonoBehaviour
         {
             other.GetComponent<HealthSystem>().TakeDamage(10f * Time.deltaTime );
         }
+
+    
     }
 
     
@@ -142,12 +176,11 @@ public class Enemy : MonoBehaviour
             healthSystem.TakeDamage(5f);
 
             float pushBack = other.transform.parent.GetComponent<Sword>().GetPushBack();
-            rigid.AddForce(-dir * pushBack, ForceMode.Impulse);
 
             Debug.Log("Take Damage");
         }
-    }
 
+    }
 
 
 

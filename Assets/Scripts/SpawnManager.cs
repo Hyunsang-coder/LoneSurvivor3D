@@ -5,13 +5,13 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public Transform[] spawnPoints;
-    Player player;
+    PlayerMovement player;
 
      float spawnTimer;
     [SerializeField] float spawnTimerMax = 5f;
     void Awake()
     {
-        player = Player.Instance;
+        player = PlayerMovement.Instance;
     }
     void Start()
     {

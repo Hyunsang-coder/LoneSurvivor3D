@@ -9,7 +9,7 @@ public class PoolManager : MonoBehaviour
     public GameObject[] prefabArray;
     List<GameObject>[] prefabArrayList;
 
-    Player player;
+    PlayerMovement player;
 
    
 

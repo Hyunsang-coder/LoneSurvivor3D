@@ -15,7 +15,7 @@ public class Sword : MonoBehaviour
     }
 
     private void Start() {
-        target = Player.Instance.gameObject.transform;
+        target = PlayerMovement.Instance.gameObject.transform;
     }
     void Update()
     {
