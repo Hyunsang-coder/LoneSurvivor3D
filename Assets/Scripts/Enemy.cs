@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
+
     [SerializeField] Animator animator;
 
     
@@ -11,44 +12,44 @@ public class EnemyMovement : MonoBehaviour
     public Material originaMaterial;
     SkinnedMeshRenderer smRenderer;
 
-    CharacterController controller;
     public float duration = 2f;
 
+    Player player;
+    Rigidbody rigid;
     HealthSystem healthSystem;
 
-    public Vector3 moveVector;
+    Vector3 dir;
 
-    public float speed = 10;
+    public float speed = 2;
 
     private Vector3 lastPosition;
     private bool isMoving;
-    [SerializeField] bool isDead;
-
-  
+    bool isDead;
 
     public Transform target;
 
-    [SerializeField] bool isGrounded;
-    [SerializeField] float rayLength = 0.2f;
-    const float gravity = -9.81f;
 
 
+
+    Collider enemyCollider;
     void OnEnable()
     {
+        player = Player.Instance;
+        rigid = GetComponent<Rigidbody>();
         healthSystem = GetComponent<HealthSystem>();
 
         animator = GetComponent<Animator>();
-        
+        target = null;
+
+        enemyCollider = GetComponent<Collider>();
 
         smRenderer = transform.Find("Character").GetComponent<SkinnedMeshRenderer>();
 
         smRenderer.material = new Material(dissolveMaterial);
 
-        controller = GetComponent<CharacterController>();
-
-        target = null;
-
         StartCoroutine(SpawnEffect());
+
+        isInbound = false;
 
         
     }
@@ -61,58 +62,30 @@ public class EnemyMovement : MonoBehaviour
    
     private void Update()
     {
+        if (target)
+        {
+            dir = target.position - rigid.position;
+        }
         
+
         if (isDead)
         {
-            animator.SetBool("Run", false);
+            animator.SetBool("Move", false);
             isMoving = false;
             target = null;
         } 
 
-        if (target)
+        if (target && !isMoving && !isDead)
         {
-            moveVector = (target.position - transform.position).normalized;
-        }
-
-
-        if (moveVector.magnitude > 0 && !isMoving)
-        {
-            animator.SetBool("Run", true);
+            animator.SetBool("Move", true);
             isMoving = true;
         }
-
-        else if (moveVector.magnitude == 0 )
+        else if (!target && isMoving && !isDead)
         {
-            animator.SetBool("Run", false);
+            animator.SetBool("Move", false);
             isMoving = false;
         }
-        
-        RaycastHit hit;
-        if(Physics.Raycast(transform.position, -transform.up, out hit, rayLength))
-        {
-            isGrounded = true;
-            moveVector.y = 0;
-        }
-        else
-        {
-            isGrounded = false;
-            moveVector.y += gravity;
 
-        }
-
-    }
-
-
-     void FixedUpdate()
-    {
-        if (isDead || !target) return;
-
-        if (target)
-        {
-            controller.Move(moveVector * Time.fixedDeltaTime * speed);
-            transform.LookAt(target.position);
-        }
-        
     }
 
     private void Start() {
@@ -141,6 +114,7 @@ public class EnemyMovement : MonoBehaviour
 
         isDead = false;
 
+        GetComponent<CapsuleCollider>().isTrigger = false;
     }
 
     public void Dead()
@@ -154,10 +128,10 @@ public class EnemyMovement : MonoBehaviour
         target = null;
         isMoving = false;
 
+        GetComponent<CapsuleCollider>().isTrigger = true;
         Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
         glowTime = 2f;
-        animator.SetTrigger("Dead");
 
         while (Time.time - startTime < duration)
         {
@@ -166,27 +140,47 @@ public class EnemyMovement : MonoBehaviour
             glowTime -= Time.deltaTime;
             currentMaterial.SetFloat("_value", glowTime);
             
-            yield return null;
+             yield return null;
         }
 
         smRenderer.material = new Material(originaMaterial);
         gameObject.SetActive(false);
     }
 
+    public bool isInbound;
 
-    private void OnTriggerStay(Collider other) {
+    
+
+    void FixedUpdate()
+    {
+        if (isDead || isInbound)
+        {
+            rigid.velocity = Vector3.zero;
+            return;
+        }
+
+        
+        if (target && !isDead)
+        {
+            transform.LookAt(target.position);
+            
+            Vector3 nextPos = dir.normalized * speed * Time.fixedDeltaTime;
+
+            rigid.MovePosition(rigid.position + nextPos);
+        }
         
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.gameObject.tag.Contains("Player"))
-        {
-            hit.gameObject.GetComponent<HealthSystem>().TakeDamage(10f * Time.deltaTime );
 
-            if (!animator.IsInTransition(0))
-            {
-                animator.SetTrigger("Attack");
-            }
+    private void OnTriggerStay(Collider other) {
+        if (other.CompareTag("Player"))
+        {
+            other.GetComponent<HealthSystem>().TakeDamage(10f * Time.deltaTime );
+        }
+
+        if (other.CompareTag("CharacterBounds"))
+        {
+            isInbound = true;
         }
     }
 
@@ -196,13 +190,26 @@ public class EnemyMovement : MonoBehaviour
         {
             healthSystem.TakeDamage(5f);
 
-            if (!animator.IsInTransition(0) && !isDead)
-            {
-                animator.SetTrigger("Hit");
-            }
+            float pushBack = other.transform.parent.GetComponent<Sword>().GetPushBack();
+            rigid.AddForce(-dir * pushBack, ForceMode.Impulse);
+
+            Debug.Log("Take Damage");
         }
 
+        if (other.CompareTag("CharacterBounds"))
+        {
+            isInbound = true;
+        }
     }
+
+    private void OnTriggerExit(Collider other) {
+        
+        if (other.CompareTag("CharacterBounds"))
+        {
+            isInbound = false;
+        }
+    }
+
 
 
 
