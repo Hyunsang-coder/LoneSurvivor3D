@@ -47,6 +47,7 @@ public class EnemyMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
 
         target = null;
+        isDead = true;
 
         StartCoroutine(SpawnEffect());
 
@@ -173,10 +174,6 @@ public class EnemyMovement : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-
-    private void OnTriggerStay(Collider other) {
-        
-    }
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.gameObject.tag.Contains("Player"))

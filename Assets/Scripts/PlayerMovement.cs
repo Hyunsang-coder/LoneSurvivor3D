@@ -40,10 +40,6 @@ public class PlayerMovement : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
 
     }
-    void Start()
-    {
-        
-    }
 
 
     void Update()
