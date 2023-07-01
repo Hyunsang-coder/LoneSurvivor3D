@@ -20,8 +20,7 @@ public class EnemyMovement : MonoBehaviour
 
     public float speed = 10;
 
-    private Vector3 lastPosition;
-    private bool isMoving;
+    [SerializeField] bool isMoving;
     [SerializeField] bool isDead;
 
   
@@ -32,6 +31,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float rayLength = 0.2f;
     const float gravity = -9.81f;
 
+    float glowTime = 0f;
+
+    
 
     void OnEnable()
     {
@@ -46,12 +48,9 @@ public class EnemyMovement : MonoBehaviour
 
         controller = GetComponent<CharacterController>();
 
-        target = null;
-        isDead = true;
+        healthSystem.onDeath += Dead;
 
         StartCoroutine(SpawnEffect());
-
-        
     }
 
     private void OnDisable() {
@@ -68,24 +67,30 @@ public class EnemyMovement : MonoBehaviour
             animator.SetBool("Run", false);
             isMoving = false;
             target = null;
-        } 
-
-        if (target)
-        {
-            moveVector = (target.position - transform.position).normalized;
         }
-
-
-        if (moveVector.magnitude > 0 && !isMoving)
+        else
         {
-            animator.SetBool("Run", true);
-            isMoving = true;
-        }
+            if (target)
+            {
+                moveVector = (target.position - transform.position).normalized;
+            }
+            else
+            {
+                moveVector = Vector3.zero;
+            }
+    
+            if (moveVector.magnitude > 0f && !isMoving)
+            {
+                animator.SetBool("Run", true);
+                isMoving = true;
+            }
 
-        else if (moveVector.magnitude == 0 )
-        {
-            animator.SetBool("Run", false);
-            isMoving = false;
+            else if (moveVector.magnitude <= 0f)
+            {
+                animator.SetBool("Run", false);
+                isMoving = false;
+            }
+
         }
         
         RaycastHit hit;
@@ -116,15 +121,13 @@ public class EnemyMovement : MonoBehaviour
         
     }
 
-    private void Start() {
-        
-        healthSystem.onDeath += Dead;
-    }
-
-    float glowTime = 0f;
+    
     IEnumerator SpawnEffect()
     {
         isDead = true;
+        target = null;
+        isMoving = false;
+        
 
         Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
@@ -141,6 +144,8 @@ public class EnemyMovement : MonoBehaviour
         smRenderer.material = new Material(originaMaterial);
 
         isDead = false;
+        controller.enabled = true;
+        animator.SetBool("Run", false);
 
     }
 
@@ -154,6 +159,7 @@ public class EnemyMovement : MonoBehaviour
         isDead = true;
         target = null;
         isMoving = false;
+        controller.enabled = false;
 
         Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
