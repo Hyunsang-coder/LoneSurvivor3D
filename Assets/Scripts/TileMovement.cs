@@ -10,7 +10,7 @@ public class TileMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-         player = PlayerMovement.Instance.transform;
+        player = PlayerMovement.Instance.transform;
     }
 
     // Update is called once per frame

@@ -7,7 +7,10 @@ public class SpawnManager : MonoBehaviour
     public Transform[] spawnPoints;
     PlayerMovement player;
 
-     float spawnTimer;
+    float spawnTimer;
+    int spawnCount;
+    int maxSpawnCount = 20;
+
     [SerializeField] float spawnTimerMax = 5f;
     void Awake()
     {
@@ -15,17 +18,23 @@ public class SpawnManager : MonoBehaviour
     }
     void Start()
     {
-        
+        spawnCount = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         spawnTimer += Time.deltaTime;
+
+        if (spawnCount > maxSpawnCount)
+        {
+            return; 
+        }
         if (spawnTimer > spawnTimerMax)
         {
             spawnTimer = 0;
             SpawnEnmey(1);
+            spawnCount++;
         }
     }
 

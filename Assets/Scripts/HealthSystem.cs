@@ -6,6 +6,7 @@ using System;
 public class HealthSystem : MonoBehaviour
 {
     public Action onDeath;
+    public Action onTakeDamage;
 
     public float MaxHealth;
     public float health;
@@ -24,6 +25,8 @@ public class HealthSystem : MonoBehaviour
         if (isDead) return;
         
         health -= damage;
+        onTakeDamage?.Invoke();
+
         if (health <= 0)
         {
             DeathBehavior();

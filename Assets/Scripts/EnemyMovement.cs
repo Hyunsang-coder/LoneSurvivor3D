@@ -12,7 +12,7 @@ public class EnemyMovement : MonoBehaviour
     SkinnedMeshRenderer smRenderer;
 
     CharacterController controller;
-    public float duration = 2f;
+    public float duration = 1.1f;
 
     HealthSystem healthSystem;
 
@@ -29,11 +29,13 @@ public class EnemyMovement : MonoBehaviour
 
     [SerializeField] bool isGrounded;
     [SerializeField] float rayLength = 0.2f;
+    [SerializeField] bool isAnimationPlaying;
+
     const float gravity = -9.81f;
 
-    float glowTime = 0f;
-
+    float splitValue = 0f;
     
+    AnimationClip attackClip;
 
     void OnEnable()
     {
@@ -51,6 +53,8 @@ public class EnemyMovement : MonoBehaviour
         healthSystem.onDeath += Dead;
 
         StartCoroutine(SpawnEffect());
+
+        isAnimationPlaying = false;
     }
 
     private void OnDisable() {
@@ -107,11 +111,14 @@ public class EnemyMovement : MonoBehaviour
         }
 
     }
-
+   
 
      void FixedUpdate()
     {
         if (isDead || !target) return;
+
+        if (isAnimationPlaying) return;
+
 
         if (target)
         {
@@ -134,8 +141,8 @@ public class EnemyMovement : MonoBehaviour
 
         while (Time.time - startTime < duration)
         {
-            glowTime += Time.deltaTime;
-            currentMaterial.SetFloat("_value", glowTime);
+            splitValue += Time.deltaTime;
+            currentMaterial.SetFloat("_value", splitValue);
             smRenderer.material = currentMaterial;
 
             yield return null;
@@ -151,6 +158,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void Dead()
     {
+        GameManager.Instance.ScoreKill();
         StartCoroutine(DeathEffect());
     }
     IEnumerator DeathEffect()
@@ -163,15 +171,15 @@ public class EnemyMovement : MonoBehaviour
 
         Material currentMaterial = new Material(dissolveMaterial);
         float startTime = Time.time;
-        glowTime = 2f;
+        splitValue = duration;
         animator.SetTrigger("Dead");
 
         while (Time.time - startTime < duration)
         {
             
             smRenderer.material = currentMaterial;
-            glowTime -= Time.deltaTime;
-            currentMaterial.SetFloat("_value", glowTime);
+            splitValue -= Time.deltaTime;
+            currentMaterial.SetFloat("_value", splitValue);
             
             yield return null;
         }
@@ -181,16 +189,26 @@ public class EnemyMovement : MonoBehaviour
     }
 
 
+    
     private void OnControllerColliderHit(ControllerColliderHit hit) {
         if (hit.gameObject.tag.Contains("Player"))
         {
             hit.gameObject.GetComponent<HealthSystem>().TakeDamage(10f * Time.deltaTime );
 
-            if (!animator.IsInTransition(0))
-            {
+            if (!animator.IsInTransition(0) && !isAnimationPlaying)
+            {   
+                
                 animator.SetTrigger("Attack");
+                StartCoroutine(AnimationReset());
             }
         }
+    }
+
+    IEnumerator AnimationReset()
+    {
+        isAnimationPlaying = true;
+        yield return new WaitForSeconds(1f);
+        isAnimationPlaying = false;
     }
 
     
@@ -202,6 +220,7 @@ public class EnemyMovement : MonoBehaviour
             if (!animator.IsInTransition(0) && !isDead)
             {
                 animator.SetTrigger("Hit");
+                StartCoroutine(AnimationReset());
             }
         }
 

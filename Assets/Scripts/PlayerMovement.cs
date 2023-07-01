@@ -25,6 +25,10 @@ public class PlayerMovement : MonoBehaviour
     public float rayLength = 0.2f;
     public GameObject[] spawnPoints;
     bool isRun;
+
+    public int level= 1;
+
+
     void Awake()
     {
         Instance = this;
@@ -39,6 +43,10 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         healthSystem = GetComponent<HealthSystem>();
 
+    }
+    void Start()
+    {
+        level = 1;
     }
 
 
@@ -59,8 +67,6 @@ public class PlayerMovement : MonoBehaviour
 
         RaycastHit hit;
         
-
-
         if(Physics.Raycast(transform.position, -transform.up, out hit, rayLength))
         {
             isGrounded = true;
@@ -94,6 +100,12 @@ public class PlayerMovement : MonoBehaviour
     void PlayerMove(InputAction.CallbackContext context)
     {
         inputValue = context.ReadValue<Vector2>().normalized;
+    }
+
+    public int PlayerLevelUp()
+    {
+        level ++;
+        return level;
     }
 
 }

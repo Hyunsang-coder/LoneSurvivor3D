@@ -184,9 +184,10 @@ MonoBehaviour:
   animator: {fileID: 0}
   dissolveMaterial: {fileID: 2100000, guid: 1637731c2a3f4d64b9a573ce2ae899d8, type: 2}
   originaMaterial: {fileID: 2100000, guid: d53b386af6b3ec8448681ad746c31680, type: 2}
-  duration: 2
+  duration: 1.2
   moveVector: {x: 0, y: 0, z: 0}
   speed: 6
+  isMoving: 0
   isDead: 0
   target: {fileID: 0}
   isGrounded: 0
