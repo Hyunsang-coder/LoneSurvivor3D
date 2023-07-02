@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 
     public int level= 1;
 
+    public SkillSystem skillSystem;
+
 
     void Awake()
     {
@@ -42,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
         chaAnimator = character.GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         healthSystem = GetComponent<HealthSystem>();
+        skillSystem = GetComponent<SkillSystem>();
 
     }
     void Start()
