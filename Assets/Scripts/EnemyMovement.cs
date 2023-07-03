@@ -160,6 +160,7 @@ public class EnemyMovement : MonoBehaviour
     {
         GameManager.Instance.ScoreKill();
         StartCoroutine(DeathEffect());
+        AudioManager.Instance.PlaySfx(AudioManager.Sfx.Dead);
     }
     IEnumerator DeathEffect()
     {

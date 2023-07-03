@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     public GameObject skillUI;
     public Transform template;
 
+    public float spaceBtwSkills = 120f;
+
     private void Awake() {
         HPslider = transform.Find("HealthUI").GetComponent<Slider>();
         XPslider = transform.Find("ExpUI").GetComponent<Slider>();
@@ -39,7 +41,7 @@ public class UIManager : MonoBehaviour
         UpdateUI();
         UpdateSkillUI();
         
-        UpdateCoolTimeUI("Test1", 3f);
+        StartCoolTime("Test1", 3f);
     }
 
     // Update is called once per frame
@@ -70,18 +72,18 @@ public class UIManager : MonoBehaviour
             
             skillTransform.gameObject.SetActive(true);
             
-            float x = (skillCount % 2 == 1) ? 100 * (i - (skillCount - 1) / 2) : 100 * (i - skillCount / 2 + 0.5f);
+            float x = (skillCount % 2 == 1) ? spaceBtwSkills * (i - (skillCount - 1) / 2) : spaceBtwSkills * (i - skillCount / 2 + 0.5f);
             skillTransform.GetComponent<RectTransform>().anchoredPosition = new Vector2 (x, 0);
             skillTransform.GetComponent<Image>().sprite = gameManager.player.skillSystem.skillList[i].icon;
 
             Image cover = skillTransform.Find("Cover").GetComponent<Image>();
-            cover.fillAmount = 1;
+            cover.fillAmount = 0;
         }
 
         Debug.Log("Skill update");
     }
 
-    public void UpdateCoolTimeUI(string skill, float coolTime)
+    public void StartCoolTime(string skill, float coolTime)
     {
         Transform skillTransform = skillUI.transform.Find(skill);
         
@@ -89,15 +91,16 @@ public class UIManager : MonoBehaviour
         if (skillTransform) 
         {
             Transform cover = skillTransform.Find("Cover");
-            StartCoroutine(CoolTime(cover, coolTime));
+            StartCoroutine(CoolTimeCoroutine(cover, coolTime));
         }
         
         Debug.Log(skill + "is null!!");
     }
 
-    IEnumerator CoolTime(Transform cover, float duration)
+    IEnumerator CoolTimeCoroutine(Transform cover, float duration)
     {
         float currentTime = Time.time; 
+        cover.GetComponent<Image>().fillAmount = 1;
         while (currentTime - Time.time < duration)
         {
             cover.GetComponent<Image>().fillAmount -= Time.deltaTime/duration;
