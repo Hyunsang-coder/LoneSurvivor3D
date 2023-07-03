@@ -15,7 +15,7 @@ public class Detector : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             enemy.SetTarget(other.gameObject.transform);
-            Debug.Log("Found a target!");
+            //Debug.Log("Found a target!");
         }
     }
 }

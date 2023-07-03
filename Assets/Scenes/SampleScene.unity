@@ -580,8 +580,8 @@ MonoBehaviour:
   bgmVolume: 0.22
   sfxClips:
   - {fileID: 8300000, guid: 6a3800394c0fce246ab982c4de9c1e17, type: 3}
-  - {fileID: 8300000, guid: 56ec81afaf1766a438f01194864b1655, type: 3}
-  - {fileID: 8300000, guid: 32e341d51dccbd14fbbe89a797b0c3b2, type: 3}
+  - {fileID: 8300000, guid: 164e2274f2c92fe43aff2d013650818c, type: 3}
+  - {fileID: 8300000, guid: 164e2274f2c92fe43aff2d013650818c, type: 3}
   - {fileID: 8300000, guid: 4c6ae4eb7e11b02408014db6fcf2e509, type: 3}
   - {fileID: 8300000, guid: 04e24721132b9ee49b09102dd653f75f, type: 3}
   - {fileID: 8300000, guid: 0cc5a93b2b9c35b43b729f53a8547a40, type: 3}

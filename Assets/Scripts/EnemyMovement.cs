@@ -200,6 +200,7 @@ public class EnemyMovement : MonoBehaviour
             {   
                 
                 animator.SetTrigger("Attack");
+                AudioManager.Instance.PlaySfx(AudioManager.Sfx.Melee);
                 StartCoroutine(AnimationReset());
             }
         }
@@ -221,6 +222,7 @@ public class EnemyMovement : MonoBehaviour
             if (!animator.IsInTransition(0) && !isDead)
             {
                 animator.SetTrigger("Hit");
+                AudioManager.Instance.PlaySfx(AudioManager.Sfx.Hit);
                 StartCoroutine(AnimationReset());
             }
         }
