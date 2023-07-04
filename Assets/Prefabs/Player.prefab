@@ -3113,6 +3113,8 @@ MonoBehaviour:
   isGrounded: 1
   rayLength: 0.2
   spawnPoints: []
+  level: 1
+  skillSystem: {fileID: 0}
 --- !u!1 &6248109834512756710
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,15 +46,18 @@ public class EnemyMovement : MonoBehaviour
 
         smRenderer = transform.Find("Character").GetComponent<SkinnedMeshRenderer>();
 
-        smRenderer.material = new Material(dissolveMaterial);
+        smRenderer.material = new Material(originaMaterial);
 
         controller = GetComponent<CharacterController>();
 
         healthSystem.onDeath += Dead;
 
-        StartCoroutine(SpawnEffect());
-
         isAnimationPlaying = false;
+
+        controller.enabled = true;
+
+        isDead = false;
+        isMoving = false;
     }
 
     private void OnDisable() {
@@ -129,6 +132,7 @@ public class EnemyMovement : MonoBehaviour
     }
 
     
+    /*
     IEnumerator SpawnEffect()
     {
         isDead = true;
@@ -153,8 +157,8 @@ public class EnemyMovement : MonoBehaviour
         isDead = false;
         controller.enabled = true;
         animator.SetBool("Run", false);
-
     }
+    */
 
     public void Dead()
     {
@@ -185,7 +189,6 @@ public class EnemyMovement : MonoBehaviour
             yield return null;
         }
 
-        smRenderer.material = new Material(originaMaterial);
         gameObject.SetActive(false);
     }
 

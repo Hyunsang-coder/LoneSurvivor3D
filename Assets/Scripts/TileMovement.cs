@@ -35,6 +35,7 @@ public class TileMovement : MonoBehaviour
 
             if (diffX > diffZ){
                 other.transform.Translate(Vector3.right * dirX * snapSize);
+
             }
 
             else if (diffX <= diffZ)
@@ -42,7 +43,8 @@ public class TileMovement : MonoBehaviour
                 other.transform.Translate(Vector3.forward * dirZ * snapSize);
             }
 
-            Debug.Log("DiffX:" + diffX + ", DiffZ:" + diffZ);
+            other.transform.Find("Props").GetComponent<ItemPlacement>().ReplaceProps();
+            //Debug.Log("DiffX:" + diffX + ", DiffZ:" + diffZ);
         }
 
         if (other.tag.Contains("Enemy"))
@@ -60,7 +62,7 @@ public class TileMovement : MonoBehaviour
     {
         if (other.tag == "Tile")
         {
-            Debug.Log("Tile!!!");
+            //Debug.Log("Tile!!!");
         }
     }
 }

@@ -6,18 +6,17 @@ public class SpawnManager : MonoBehaviour
 {
     public Transform[] spawnPoints;
     PlayerMovement player;
+    Transform target;
 
     float spawnTimer;
     int spawnCount;
     int maxSpawnCount = 20;
 
     [SerializeField] float spawnTimerMax = 5f;
-    void Awake()
-    {
-        player = PlayerMovement.Instance;
-    }
+   
     void Start()
     {
+        target = PlayerMovement.Instance.gameObject.transform;
         spawnCount = 0;
     }
 
@@ -33,9 +32,13 @@ public class SpawnManager : MonoBehaviour
         if (spawnTimer > spawnTimerMax)
         {
             spawnTimer = 0;
-            SpawnEnmey(1);
+            SpawnEnmey(0);
             spawnCount++;
         }
+    }
+
+    private void LateUpdate() {
+        transform.position = target.position;
     }
 
     void SpawnEnmey(int index)

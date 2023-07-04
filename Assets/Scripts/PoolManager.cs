@@ -9,10 +9,7 @@ public class PoolManager : MonoBehaviour
     public GameObject[] prefabArray;
     List<GameObject>[] prefabArrayList;
 
-    PlayerMovement player;
-
-   
-
+    
 
     private void Awake()
     {

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
@@ -16,6 +16,10 @@ public class AudioManager : MonoBehaviour
 
     AudioSource bgmPlayer;
     AudioHighPassFilter audioFilter;
+
+    public AudioMixer mixer;
+
+    
 
     [Header("SFX")]
 
@@ -74,6 +78,7 @@ public class AudioManager : MonoBehaviour
             sfxPlayers[index].playOnAwake = false;
             sfxPlayers[index].bypassListenerEffects = true;
             sfxPlayers[index].volume = sfxVolume;
+            sfxPlayers[index].outputAudioMixerGroup = mixer.FindMatchingGroups("Master")[0];
         }
 
     }
@@ -104,6 +109,7 @@ public class AudioManager : MonoBehaviour
             // 비어 있는 audio source를 찾아서 저장 후 플레이 
             channelIndex = loopIndex;
             sfxPlayers[loopIndex].clip = sfxClips[(int)sfx + randomIndex];
+            sfxPlayers[loopIndex].volume = sfxVolume;
             sfxPlayers[loopIndex].Play();
             break;
         }
