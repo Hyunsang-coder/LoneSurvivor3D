@@ -30,10 +30,11 @@ public class Magic : MonoBehaviour
     {
         fireBall = PoolManager.Instance.GetObject(1);
 
-        fireBall.transform.position = transform.position + new Vector3(1f, 1f, 0f);
-
+        // position은 point를 기준으로 맞춤
+        fireBall.transform.position = transform.Find("Point").position;
         
-        fireBall.transform.rotation = Quaternion.LookRotation(transform.forward);
+        // 방향은 player를 기준으로 맞춤
+        fireBall.transform.rotation = transform.rotation;
 
     }
 }

@@ -8,22 +8,28 @@ public class FireBall : MonoBehaviour
     public float speed = 10f;
     
     Vector3 forwardDirection;
+
+    public float lifeTime = 4f;
+    float timer;
     private void OnEnable() {
         
-        forwardDirection = new Vector3(PlayerMovement.Instance.moveVector.x, 1f, PlayerMovement.Instance.moveVector.z);
-
-        Debug.Log("forwarDirection:" + forwardDirection);
+        timer = 0;
+        // 활성화되는 순간 player의 정면 기준으로 forward direction 설정
+        forwardDirection = PlayerMovement.Instance.transform.forward;
     }
-    void Start()
-    {
-        
-    }
-    
-    private void Update() 
-    {
-        if (spawnPoint == null) return;
 
-        transform.Translate(forwardDirection * Time.deltaTime * speed, Space.World);
+    private void Update() {
+        timer += Time.deltaTime;
+        if (timer > lifeTime)
+        {
+            timer = 0;
+            gameObject.SetActive(false);
+        }
+
+    }
+    private void FixedUpdate() {
+
+        transform.Translate(forwardDirection * Time.fixedDeltaTime * speed, Space.World);
     }
 
     private void OnTriggerEnter(Collider other) 
