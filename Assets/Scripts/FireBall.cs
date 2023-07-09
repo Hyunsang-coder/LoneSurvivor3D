@@ -8,7 +8,8 @@ public class FireBall : MonoBehaviour
     public float speed = 10f;
     
     Vector3 forwardDirection;
-
+    public TrailRenderer trail; 
+    
     public float lifeTime = 4f;
     float timer;
     private void OnEnable() {
@@ -27,6 +28,7 @@ public class FireBall : MonoBehaviour
         }
 
     }
+
     private void FixedUpdate() {
 
         transform.Translate(forwardDirection * Time.fixedDeltaTime * speed, Space.World);
@@ -37,8 +39,14 @@ public class FireBall : MonoBehaviour
         if (other.tag.Contains("Enemy"))
         {
             gameObject.SetActive(false);    
+            //trail.enabled = false;
         }
         
+    }
+
+    void OnDisable()
+    {
+        trail.Clear();
     }
 }
     

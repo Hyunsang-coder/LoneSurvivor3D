@@ -18,12 +18,7 @@ public class Magic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer > timerMax)
-        {
-            timer = 0;
-            ThrowFireBall();
-        }
+       
     }
 
     public void ThrowFireBall()

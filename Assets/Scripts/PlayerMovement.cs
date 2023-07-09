@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     public int level= 1;
 
     public SkillSystem skillSystem;
-
+    Magic magic;
 
     void Awake()
     {
@@ -39,12 +39,16 @@ public class PlayerMovement : MonoBehaviour
         input.Player.Move.Enable();
         input.Player.Move.performed += PlayerMove;
         input.Player.Move.canceled += PlayerMove;
+        input.Player.Fire.Enable();
+        input.Player.Fire.performed += Fire;
 
         character = transform.Find("Character").gameObject;
         chaAnimator = character.GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         healthSystem = GetComponent<HealthSystem>();
         skillSystem = GetComponent<SkillSystem>();
+
+        magic = GetComponent<Magic>();
 
     }
     void Start()
@@ -103,6 +107,11 @@ public class PlayerMovement : MonoBehaviour
     void PlayerMove(InputAction.CallbackContext context)
     {
         inputValue = context.ReadValue<Vector2>().normalized;
+    }
+
+    void Fire(InputAction.CallbackContext context)
+    {
+        magic.ThrowFireBall();
     }
 
     public int PlayerLevelUp()
