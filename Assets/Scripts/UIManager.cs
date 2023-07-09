@@ -17,7 +17,10 @@ public class UIManager : MonoBehaviour
     public GameObject skillUI;
     public Transform template;
 
+    public Text noti;
+
     public float spaceBtwSkills = 120f;
+    public float notiDuration = 3f;
 
     private void Awake() {
         HPslider = transform.Find("HealthUI").GetComponent<Slider>();
@@ -25,6 +28,9 @@ public class UIManager : MonoBehaviour
         level = transform.Find("Level").GetComponent<Text>();
         kill = transform.Find("Kill").GetComponent<Text>();
         stage = transform.Find("Stage").GetComponent<Text>();
+        noti = transform.Find("Noti").GetComponent<Text>();
+        noti.text = "";
+
         skillUI = transform.Find("SkillUI").gameObject;
 
         template = skillUI.transform.Find("Template");
@@ -36,6 +42,7 @@ public class UIManager : MonoBehaviour
         gameManager =  GameManager.Instance;
 
         gameManager.onKillScoreChange += UpdateUI;
+        gameManager.onLevelUp += Notify;
         playerHealth.onTakeDamage += UpdateUI;
 
         UpdateUI();
@@ -80,7 +87,7 @@ public class UIManager : MonoBehaviour
             cover.fillAmount = 0;
         }
 
-        Debug.Log("Skill update");
+        // Debug.Log("Skill update");
     }
 
     public void StartCoolTime(string skill, float coolTime)
@@ -109,5 +116,16 @@ public class UIManager : MonoBehaviour
         
     }
 
+    public void Notify(string message)
+    {
+        noti.text = message;
+        StartCoroutine(NotiCoroutine());
+    }
+
+    IEnumerator NotiCoroutine()
+    {   
+        yield return new WaitForSeconds(notiDuration);
+        noti.text = "";
+    }
     
 }

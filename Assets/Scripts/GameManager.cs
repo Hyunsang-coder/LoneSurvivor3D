@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public Action onKillScoreChange;
-
+    public Action<string> onLevelUp;
     public int totalKillCount;
     public int currentKillCount;
     public float gameTime;
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
         totalKillCount ++;
         currentKillCount++;
         
-        if (totalKillCount == levelUpThreshold)
+        if (currentKillCount == levelUpThreshold)
         {
             LevelUp();
         }
@@ -57,6 +57,9 @@ public class GameManager : MonoBehaviour
         UpdateLevelUpThreshold(player.PlayerLevelUp());
         currentKillCount = 0;
         playerLevel = player.level;
+
+        string levelUpMsg = "Level up!\n Current Level: ";
+        onLevelUp?.Invoke(levelUpMsg + playerLevel.ToString() );
     }
 
     public void UpdateLevelUpThreshold(int playerLevel)
